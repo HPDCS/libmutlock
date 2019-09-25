@@ -213,3 +213,58 @@ static inline int FUNC_NAME(NAME, _mutlock_destroy)(__HLOCK_OBJ(NAME)* lock){
 	return SUCCESS;
 }
 
+
+
+
+typedef __HLOCK_OBJ(NAME) 	 lock_mutex_t;
+
+
+//typedef semtcpmutlock_context_t lock_context_t;
+//typedef semtcpmutlock_cond_t lock_cond_t;
+//typedef pthread_cond_t 		semtcpmutlock_cond_t;
+//typedef void 				*semtcpmutlock_context_t; // Unused, take the less space as possible
+
+
+typedef pthread_cond_t 		lock_cond_t;
+typedef void 				*lock_context_t; // Unused, take the less space as possible
+
+#define lock_mutex_create 	__CONCAT(PRVT_LOCK_NAME, _mutex_create	) //semtcpmutlock_mutex_create
+#define lock_mutex_lock 	__CONCAT(PRVT_LOCK_NAME, _mutex_lock	)
+#define lock_mutex_trylock 	__CONCAT(PRVT_LOCK_NAME, _mutex_trylock	)
+#define lock_mutex_unlock 	__CONCAT(PRVT_LOCK_NAME, _mutex_unlock	)
+#define lock_mutex_destroy 	__CONCAT(PRVT_LOCK_NAME, _mutex_destroy	)
+
+#define lock_cond_init 			__CONCAT(PRVT_LOCK_NAME, _cond_init				)	
+#define lock_cond_timedwait 	__CONCAT(PRVT_LOCK_NAME, _cond_timedwait		)			
+#define lock_cond_wait 			__CONCAT(PRVT_LOCK_NAME, _cond_wait				)	
+#define lock_cond_signal 		__CONCAT(PRVT_LOCK_NAME, _cond_signal			)		
+#define lock_cond_broadcast 	__CONCAT(PRVT_LOCK_NAME, _cond_broadcast		)			
+#define lock_cond_destroy 		__CONCAT(PRVT_LOCK_NAME, _cond_destroy			)		
+#define lock_thread_start 		__CONCAT(PRVT_LOCK_NAME, _thread_start			)		
+#define lock_thread_exit 		__CONCAT(PRVT_LOCK_NAME, _thread_exit			)		
+#define lock_application_init 	__CONCAT(PRVT_LOCK_NAME, _application_init		)			
+#define lock_application_exit 	__CONCAT(PRVT_LOCK_NAME, _application_exit		)			
+#define lock_init_context 		__CONCAT(PRVT_LOCK_NAME, _init_context			)		
+
+
+lock_mutex_t *lock_mutex_create(const pthread_mutexattr_t *attr);
+int  lock_mutex_lock(   lock_mutex_t *impl, lock_context_t *me);
+int  lock_mutex_trylock(lock_mutex_t *impl, lock_context_t *me);
+void lock_mutex_unlock( lock_mutex_t *impl, lock_context_t *me);
+int  lock_mutex_destroy(lock_mutex_t *lock);
+
+
+int  lock_cond_init(lock_cond_t *cond, const pthread_condattr_t *attr);
+int  lock_cond_timedwait(lock_cond_t *cond, lock_mutex_t *lock, lock_context_t *me, const struct timespec *ts);
+int  lock_cond_wait(lock_cond_t *cond, lock_mutex_t *lock, lock_context_t *me);
+int  lock_cond_signal(lock_cond_t *cond);
+int  lock_cond_broadcast(lock_cond_t *cond);
+int  lock_cond_destroy(lock_cond_t *cond);
+
+void lock_thread_start(void);
+void lock_thread_exit(void);
+void lock_application_init(void);
+void lock_application_exit(void);
+
+
+

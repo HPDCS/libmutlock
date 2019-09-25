@@ -71,3 +71,32 @@ $(TARGETS): $(OBJ)
 
 clean:
 	rm -rf $(OBJ) $(TARGETS)  $(OBJ:.o=.d) deps_src
+	rm -r liblitl -f
+
+litl: liblitl liblitl_sem_tcp_mutlock liblitl_sem_tcp2_mutlock liblitl-patch
+	cd liblitl; make
+
+liblitl:
+	@echo "---- Cloning litl framework ----"
+	git clone https://github.com/multicore-locks/litl.git liblitl 
+
+liblitl-patch: liblitl/libmutlock-patch
+
+liblitl/libmutlock-patch:
+	@echo "---- Apply patch to litl framework ----"
+	-cd liblitl; patch -p0 < ../libmutlock-patch;
+	cp libmutlock-patch liblitl/libmutlock-patch
+
+liblitl_%:
+	@echo "---- Copy and patch $(patsubst liblitl_%, %, $@) from libmutlock to litl framework ----"
+	cp $(SRCDIR)/utils/spin_utils.h liblitl/include
+	cp $(SRCDIR)/utils/sleep_utils.h liblitl/include
+	cp $(SRCDIR)/queued-spinlock/queued_spinlock.h liblitl/include
+	cp $(SRCDIR)/utils/node_basket.h liblitl/include
+	cp $(SRCDIR)/mutlocks/mutlocks_common.h liblitl/include
+	cp $(SRCDIR)/mutlocks/mutlocks_template.h liblitl/include
+	cp $(SRCDIR)/mutlocks/mutlocks_template_ending.h liblitl/include
+	cp $(SRCDIR)/mutlocks/$(patsubst liblitl_%,%, $@).h liblitl/include
+	cp $(SRCDIR)/mutlocks/$(patsubst liblitl_%,%, $@).c liblitl/src
+	mv liblitl/include/$(patsubst liblitl_%,%, $@).h liblitl/include/$(subst _,,$(patsubst liblitl_%,%, $@)).h
+	mv liblitl/src/$(patsubst liblitl_%,%, $@).c liblitl/src/$(subst _,,$(patsubst liblitl_%,%, $@)).c

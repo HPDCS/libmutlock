@@ -1,0 +1,49 @@
+diff --git Makefile.config Makefile.config
+index fb4c970..5667fa4 100644
+--- Makefile.config
++++ Makefile.config
+@@ -31,4 +31,5 @@ cbomcs_spin_then_park 		 \
+ cptltkt_original 			 \
+ ctkttkt_original 			 \
+ partitioned_original         \
+-mutexee_original
++mutexee_original			 \
++semtcpmutlock_original
+diff --git src/interpose.c src/interpose.c
+index 1e65e77..eb19e92 100644
+--- src/interpose.c
++++ src/interpose.c
+@@ -87,6 +87,8 @@
+ #include <partitioned.h>
+ #elif defined(MUTEXEE)
+ #include <mutexee.h>
++#elif defined(SEMTCPMUTLOCK)
++#include <semtcpmutlock.h>
+ #else
+ #error "No lock algorithm known"
+ #endif
+@@ -456,6 +458,8 @@ int pthread_mutex_lock(pthread_mutex_t *mutex) {
+ int pthread_mutex_timedlock(pthread_mutex_t *mutex,
+                             const struct timespec *abstime) {
+     assert(0 && "Timed locks not supported");
++    exit(1);
++    return 0;
+ }
+ 
+ int pthread_mutex_trylock(pthread_mutex_t *mutex) {
+@@ -660,11 +664,15 @@ int pthread_rwlock_wrlock(pthread_rwlock_t *rwlock) {
+ int pthread_rwlock_timedrdlock(pthread_rwlock_t *lcok,
+                             const struct timespec *abstime) {
+     assert(0 && "Timed locks not supported");
++    exit(1);
++    return 0;
+ }
+ 
+ int pthread_rwlock_timedwrlock(pthread_rwlock_t *lock,
+                             const struct timespec *abstime) {
+     assert(0 && "Timed locks not supported");
++    exit(1);
++    return 0;
+ }
+ 
+ 

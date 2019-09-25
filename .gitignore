@@ -21,3 +21,4 @@ test2/test-*
 **/deps_src
 **/tmp_scripts
 /include/
+liblitl/

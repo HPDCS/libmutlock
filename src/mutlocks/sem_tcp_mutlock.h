@@ -1,6 +1,13 @@
 #ifndef _SEM_TCP_FIN_MUTLOCK_H_
 #define _SEM_TCP_FIN_MUTLOCK_H_
 
+#define LOCK_ALGORITHM "SEMTCPMUTLOCK"
+#define NEED_CONTEXT 0
+#define SUPPORT_WAITING 0
+
+#define PRVT_LOCK_NAME "semtcpmutlock"
+
+
 #define NAME sem_tcp
 
 #define sem_tcp_SPIN_API_INIT      __NOFIFO_SPIN_API_INIT

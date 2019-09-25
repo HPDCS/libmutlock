@@ -1,7 +1,12 @@
 //#include <stdlib.h>
 //#include <assert.h>
 
+#if __has_include("sem_tcp_mutlock.h")
 #include "sem_tcp_mutlock.h"
+#else
+#include "semtcpmutlock.h"
+#include "utils.h"
+#endif
 
 #define NAME sem_tcp
 
@@ -75,3 +80,15 @@ int DEC_LOCK(NAME)(__HLOCK_OBJ(NAME)* mutlock){
 
 }
 
+#if __has_include("semtcpmutlock.h")
+lock_mutex_t *lock_mutex_create(const pthread_mutexattr_t *attr){
+    lock_mutex_t *impl = (lock_mutex_t *)alloc_cache_align(sizeof(lock_mutex_t));
+	sem_tcp_mutlock_param_t sem_tcp_params;
+	sem_tcp_params.initial_sws = 1;
+	sem_tcp_mutlock_init(impl, &sem_tcp_params); // attiva euristica
+	return impl;
+}
+#endif
+
+
+#include "mutlocks_template_ending.h"
