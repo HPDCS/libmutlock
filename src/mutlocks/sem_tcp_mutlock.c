@@ -96,5 +96,6 @@ lock_mutex_t *lock_mutex_create(const pthread_mutexattr_t *attr){
 }
 #endif
 
-
+#if !__has_include("sem_tcp_mutlock.h")
 #include "mutlocks_template_ending.h"
+#endif
