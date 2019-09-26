@@ -1,0 +1,62 @@
+diff --git a/Makefile b/Makefile
+index badb0de..2781cf1 100644
+--- a/Makefile
++++ b/Makefile
+@@ -66,6 +66,8 @@ include/topology.h: include/topology.in
+ 	sed -i "s/@pagesize@/$$(getconf PAGESIZE)/g" $@
+ 	sed -i 's#@cpufreq@#'$$(cat /proc/cpuinfo | grep MHz | head -1 | awk '{ x = $$4/1000; printf("%0.2g", x); }')'#g' $@
+ 	chmod a+x $@
++	sed -i 's/NUMA/1/g' include/topology.h
++	sed -i 's/1_/NUMA_/g' include/topology.h
+ 
+ 
+ clean:
+diff --git a/Makefile.config b/Makefile.config
+index fb4c970..5667fa4 100644
+--- a/Makefile.config
++++ b/Makefile.config
+@@ -31,4 +31,5 @@ cbomcs_spin_then_park 		 \
+ cptltkt_original 			 \
+ ctkttkt_original 			 \
+ partitioned_original         \
+-mutexee_original
++mutexee_original			 \
++semtcpmutlock_original
+diff --git a/src/interpose.c b/src/interpose.c
+index 1e65e77..eb19e92 100644
+--- a/src/interpose.c
++++ b/src/interpose.c
+@@ -87,6 +87,8 @@
+ #include <partitioned.h>
+ #elif defined(MUTEXEE)
+ #include <mutexee.h>
++#elif defined(SEMTCPMUTLOCK)
++#include <semtcpmutlock.h>
+ #else
+ #error "No lock algorithm known"
+ #endif
+@@ -456,6 +458,8 @@ int pthread_mutex_lock(pthread_mutex_t *mutex) {
+ int pthread_mutex_timedlock(pthread_mutex_t *mutex,
+                             const struct timespec *abstime) {
+     assert(0 && "Timed locks not supported");
++    exit(1);
++    return 0;
+ }
+ 
+ int pthread_mutex_trylock(pthread_mutex_t *mutex) {
+@@ -660,11 +664,15 @@ int pthread_rwlock_wrlock(pthread_rwlock_t *rwlock) {
+ int pthread_rwlock_timedrdlock(pthread_rwlock_t *lcok,
+                             const struct timespec *abstime) {
+     assert(0 && "Timed locks not supported");
++    exit(1);
++    return 0;
+ }
+ 
+ int pthread_rwlock_timedwrlock(pthread_rwlock_t *lock,
+                             const struct timespec *abstime) {
+     assert(0 && "Timed locks not supported");
++    exit(1);
++    return 0;
+ }
+ 
+ 

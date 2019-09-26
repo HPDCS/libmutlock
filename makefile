@@ -84,8 +84,8 @@ liblitl-patch: liblitl/libmutlock-patch
 
 liblitl/libmutlock-patch:
 	@echo "---- Apply patch to litl framework ----"
-	-cd liblitl; patch -p0 < ../libmutlock-patch;
-	cp libmutlock-patch liblitl/libmutlock-patch
+	-cd liblitl; patch -p1 < ../liblitl-patch;
+	cp liblitl-patch liblitl/liblitl-patch
 
 liblitl_%:
 	@echo "---- Copy and patch $(patsubst liblitl_%, %, $@) from libmutlock to litl framework ----"
