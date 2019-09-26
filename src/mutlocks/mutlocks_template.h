@@ -1,4 +1,13 @@
+#if COND_VAR
+#include "padding.h"
+#include <errno.h>
+#endif
+
 typedef struct __HLOCK_STRUCT(NAME) {
+#if COND_VAR
+    pthread_mutex_t posix_lock;
+    char __pad[pad_to_cache_line(sizeof(pthread_mutex_t))];
+#endif
 volatile unsigned long long lstate;  	/* 8*/
 //char pad1[64-sizeof(unsigned long long)];
 __SPIN_OBJ(NAME) spin_obj;					/*12*/

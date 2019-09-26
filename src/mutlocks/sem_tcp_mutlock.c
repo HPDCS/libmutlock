@@ -6,6 +6,7 @@
 #else
 #include "semtcpmutlock.h"
 #include "utils.h"
+#include "interpose.h"
 #endif
 
 #define NAME sem_tcp
@@ -86,6 +87,11 @@ lock_mutex_t *lock_mutex_create(const pthread_mutexattr_t *attr){
 	sem_tcp_mutlock_param_t sem_tcp_params;
 	sem_tcp_params.initial_sws = 1;
 	sem_tcp_mutlock_init(impl, &sem_tcp_params); // attiva euristica
+	#if COND_VAR
+    REAL(pthread_mutex_init)(&impl->posix_lock, /*&errattr */ attr);
+    DEBUG("Mutex init lock=%p posix_lock=%p\n", impl, &impl->posix_lock);
+	#endif
+
 	return impl;
 }
 #endif
