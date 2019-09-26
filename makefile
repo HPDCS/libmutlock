@@ -80,9 +80,9 @@ liblitl:
 	@echo "---- Cloning litl framework ----"
 	git clone https://github.com/multicore-locks/litl.git liblitl 
 
-liblitl-patch: liblitl/libmutlock-patch
+liblitl-patch: liblitl/liblitl-patch
 
-liblitl/libmutlock-patch:
+liblitl/liblitl-patch:
 	@echo "---- Apply patch to litl framework ----"
 	-cd liblitl; patch -p1 < ../liblitl-patch;
 	cp liblitl-patch liblitl/liblitl-patch
