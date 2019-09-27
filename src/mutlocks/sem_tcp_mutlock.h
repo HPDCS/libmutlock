@@ -5,8 +5,8 @@
 #define NEED_CONTEXT 0
 #define SUPPORT_WAITING 0
 
-#define PRVT_LOCK_NAME "semtcpmutlock"
-
+#define PRVT_LOCK_TKN semtcpmutlock
+#define PRVT_LOCK_NAME #semtcpmutlock
 
 #define NAME sem_tcp
 

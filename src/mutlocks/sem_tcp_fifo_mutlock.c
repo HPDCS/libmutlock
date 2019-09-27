@@ -3,14 +3,14 @@
 
 
 
-#if __has_include("sem_tcp_mutlock.h")
-#include "sem_tcp_mutlock.h"
-#define NAME sem_tcp
+#if __has_include("sem_tcp_fifo_mutlock.h")
+#include "sem_tcp_fifo_mutlock.h"
+#define NAME sem_tcp_fifo
 #else
-#include "semtcpmutlock.h"
+#include "semtcpfifomutlock.h"
 #include "utils.h"
 #include "interpose.h"
-#define NAME sem_tcp
+#define NAME sem_tcp_fifo
 #include "mutlocks_template_ending.h"
 #endif
 

@@ -12,30 +12,33 @@ index badb0de..2781cf1 100644
  
  clean:
 diff --git a/Makefile.config b/Makefile.config
-index fb4c970..5667fa4 100644
+index fb4c970..239b9f7 100644
 --- a/Makefile.config
 +++ b/Makefile.config
-@@ -31,4 +31,5 @@ cbomcs_spin_then_park 		 \
+@@ -31,4 +31,6 @@ cbomcs_spin_then_park 		 \
  cptltkt_original 			 \
  ctkttkt_original 			 \
  partitioned_original         \
 -mutexee_original
 +mutexee_original			 \
-+semtcpmutlock_original
++semtcpmutlock_original		 \
++semtcpfifomutlock_original
 diff --git a/src/interpose.c b/src/interpose.c
-index 1e65e77..eb19e92 100644
+index 1e65e77..9df9425 100644
 --- a/src/interpose.c
 +++ b/src/interpose.c
-@@ -87,6 +87,8 @@
+@@ -87,6 +87,10 @@
  #include <partitioned.h>
  #elif defined(MUTEXEE)
  #include <mutexee.h>
 +#elif defined(SEMTCPMUTLOCK)
 +#include <semtcpmutlock.h>
++#elif defined(SEMTCPFIFOMUTLOCK)
++#include <semtcpfifomutlock.h>
  #else
  #error "No lock algorithm known"
  #endif
-@@ -456,6 +458,8 @@ int pthread_mutex_lock(pthread_mutex_t *mutex) {
+@@ -456,6 +460,8 @@ int pthread_mutex_lock(pthread_mutex_t *mutex) {
  int pthread_mutex_timedlock(pthread_mutex_t *mutex,
                              const struct timespec *abstime) {
      assert(0 && "Timed locks not supported");
@@ -44,7 +47,7 @@ index 1e65e77..eb19e92 100644
  }
  
  int pthread_mutex_trylock(pthread_mutex_t *mutex) {
-@@ -660,11 +664,15 @@ int pthread_rwlock_wrlock(pthread_rwlock_t *rwlock) {
+@@ -660,11 +666,15 @@ int pthread_rwlock_wrlock(pthread_rwlock_t *rwlock) {
  int pthread_rwlock_timedrdlock(pthread_rwlock_t *lcok,
                              const struct timespec *abstime) {
      assert(0 && "Timed locks not supported");

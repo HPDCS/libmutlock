@@ -27,6 +27,11 @@
 #define THC1_MASK   (1 << THC1_POS  )
 
 //#define __CONCAT(x,y) x##y
+#define __MYCAT(a, ...)	    a ## __VA_ARGS__
+#define __MYPRE(a, ...)	    __VA_ARGS__ ## a
+#define __MYCAT2(a, ...)	__MYCAT(a, __VA_ARGS__)	
+#define __MYCAT3(a, ...)	__MYPRE(__VA_ARGS__, a)	
+
 
 #define __SLEEP_OBJ(NAME) __CONCAT(NAME,_sleep_obj_t)
 #define __SPIN_OBJ(NAME)  __CONCAT(NAME,_spin_obj_t)

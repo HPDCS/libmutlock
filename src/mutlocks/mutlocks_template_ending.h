@@ -1,3 +1,15 @@
+lock_mutex_t *lock_mutex_create(const pthread_mutexattr_t *attr){
+    lock_mutex_t *impl = (lock_mutex_t *)alloc_cache_align(sizeof(lock_mutex_t));
+	__HLOCK_PARAM_OBJ(NAME) params;
+	params.initial_sws = 1;
+	DEC_INIT(NAME)(impl, &params); // attiva euristica
+	#if COND_VAR
+    REAL(pthread_mutex_init)(&impl->posix_lock, /*&errattr */ attr);
+    DEBUG("Mutex init lock=%p posix_lock=%p\n", impl, &impl->posix_lock);
+	#endif
+
+	return impl;
+}
 
 int  lock_mutex_lock(   lock_mutex_t *impl, lock_context_t *me){
  	return DEC_LOCK(NAME)(impl);
