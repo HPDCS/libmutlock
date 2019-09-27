@@ -73,7 +73,7 @@ clean:
 	rm -rf $(OBJ) $(TARGETS)  $(OBJ:.o=.d) deps_src
 	rm -r liblitl -f
 
-litl: liblitl liblitl_sem_tcp_mutlock liblitl_sem_tcp2_mutlock liblitl-patch
+litl: liblitl liblitl_sem_tcp_mutlock liblitl_sem_tcp_fifo_mutlock liblitl_sem_tcp2_mutlock liblitl-patch
 	cd liblitl; make
 
 liblitl:

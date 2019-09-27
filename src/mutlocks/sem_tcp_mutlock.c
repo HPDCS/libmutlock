@@ -83,4 +83,3 @@ int DEC_LOCK(NAME)(__HLOCK_OBJ(NAME)* mutlock){
 	return SUCCESS;
 
 }
-
