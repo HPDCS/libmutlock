@@ -10,6 +10,7 @@
 #include "semtcpfifomutlock.h"
 #include "utils.h"
 #include "interpose.h"
+DECLARE_THREAD_LOCAL_NODES(qnode_t);
 #define NAME sem_tcp_fifo
 #include "mutlocks_template_ending.h"
 #endif
