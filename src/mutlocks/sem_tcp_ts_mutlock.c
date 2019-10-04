@@ -16,6 +16,7 @@
 
 
 
+
 /*
  * Creates the mutable lock
  */
@@ -41,6 +42,7 @@ int DEC_LOCK(NAME)(__HLOCK_OBJ(NAME)* mutlock){
 	long long delta = 0;
 	long long res = 0;
 	unsigned long long sws = 0; 
+	long long ssws;
 	
 	// START ACQUIRE
 	res = INLINE_FUNC_NAME(NAME, __mut_lock)(mutlock);
@@ -55,6 +57,7 @@ int DEC_LOCK(NAME)(__HLOCK_OBJ(NAME)* mutlock){
 	if(updsws) 
 		return SUCCESS;
 
+	ssws = sws;
 	// arrived too late, increase heuristic count
 	mutlock->hcnt += !(slept && !spun);
 
@@ -67,15 +70,14 @@ int DEC_LOCK(NAME)(__HLOCK_OBJ(NAME)* mutlock){
 	assert(mutlock->hcnt >= -mutlock->cores);
 	
 	if (slept && !spun) {
-		if(mutlock->hcnt > 0){
+		if(sws != mutlock->cores){
 			mutlock->hcnt = 0;
 			delta = sws;
-			delta = ( (sws + delta) <= mutlock->cores) ? delta : (mutlock->cores-delta);
+			delta = ( (sws + delta) <= mutlock->cores) ? delta : (mutlock->cores-sws);
 		} 
-		else if(sws == mutlock->cores) mutlock->hcnt -= 1;
-		if(mutlock->hcnt < -sws){
+		else if(sws == mutlock->cores){
 			mutlock->hcnt = 0;
-			delta = -sws+1;
+			delta = -ssws+1;
 		} 
 		
 	}
