@@ -12,7 +12,14 @@ lock_mutex_t *lock_mutex_create(const pthread_mutexattr_t *attr){
 }
 
 int  lock_mutex_lock(   lock_mutex_t *impl, lock_context_t *me){
- 	return DEC_LOCK(NAME)(impl);
+ 	int res = DEC_LOCK(NAME)(impl);
+ 	#if COND_VAR
+    if (ret == 0) {
+        DEBUG_PTHREAD("[%d] Lock posix=%p\n", cur_thread_id, &impl->posix_lock);
+        assert(REAL(pthread_mutex_lock)(&impl->posix_lock) == 0);
+    }
+	#endif
+	return res;
 
 }
 
@@ -22,7 +29,14 @@ int  lock_mutex_trylock(lock_mutex_t *impl, lock_context_t *me){
  	return 0;
  }
 
-void lock_mutex_unlock( lock_mutex_t *impl, lock_context_t *me){ 			DEC_UNLO(NAME)(impl);}
+void lock_mutex_unlock( lock_mutex_t *impl, lock_context_t *me){
+ #if COND_VAR
+    DEBUG_PTHREAD("[%d] Unlock posix=%p\n", cur_thread_id, &impl->posix_lock);
+    assert(REAL(pthread_mutex_unlock)(&impl->posix_lock) == 0);
+#endif
+	DEC_UNLO(NAME)(impl);
+}
+
 int  lock_mutex_destroy(lock_mutex_t *lock){ 						
 	#if COND_VAR
 	    REAL(pthread_mutex_destroy)(&lock->posix_lock);
@@ -43,37 +57,37 @@ int  lock_cond_init(lock_cond_t *cond, const pthread_condattr_t *attr){
 }
 
 int  lock_cond_timedwait(lock_cond_t *cond, lock_mutex_t *lock, lock_context_t *me, const struct timespec *ts){
-	#if COND_VAR
-	    int res;
+#if COND_VAR
+    int res;
 
-	    DEC_UNLO(NAME)(lock);
-	    DEBUG("[%d] Sleep cond=%p lock=%p posix_lock=%p\n", cur_thread_id, cond,
-	          lock, &(lock->posix_lock));
-	    DEBUG_PTHREAD("[%d] Cond posix = %p lock = %p\n", cur_thread_id, cond,
-	                  &lock->posix_lock);
+    DEC_UNLO(NAME)(lock);
+    DEBUG("[%d] Sleep cond=%p lock=%p posix_lock=%p\n", cur_thread_id, cond,
+          lock, &(lock->posix_lock));
+    DEBUG_PTHREAD("[%d] Cond posix = %p lock = %p\n", cur_thread_id, cond,
+                  &lock->posix_lock);
 
-	    if (ts)
-	        res = REAL(pthread_cond_timedwait)(cond, &lock->posix_lock, ts);
-	    else
-	        res = REAL(pthread_cond_wait)(cond, &lock->posix_lock);
+    if (ts)
+        res = REAL(pthread_cond_timedwait)(cond, &lock->posix_lock, ts);
+    else
+        res = REAL(pthread_cond_wait)(cond, &lock->posix_lock);
 
-	    if (res != 0 && res != ETIMEDOUT) {
-	        fprintf(stderr, "Error on cond_{timed,}wait %d\n", res);
-	        assert(0);
-	    }
+    if (res != 0 && res != ETIMEDOUT) {
+        fprintf(stderr, "Error on cond_{timed,}wait %d\n", res);
+        assert(0);
+    }
 
-	    int ret = 0;
-	    if ((ret = REAL(pthread_mutex_unlock)(&lock->posix_lock)) != 0) {
-	        fprintf(stderr, "Error on mutex_unlock %d\n", ret == EPERM);
-	        assert(0);
-	    }
+    int ret = 0;
+    if ((ret = REAL(pthread_mutex_unlock)(&lock->posix_lock)) != 0) {
+        fprintf(stderr, "Error on mutex_unlock %d\n", ret == EPERM);
+        assert(0);
+    }
 
-   	    DEC_LOCK(NAME)(lock);
-	    return res;
-	#else
-		null_abort(); 
-		return 0;
-	#endif
+    lock_mutex_lock(lock, me);
+    return res;
+#else
+	null_abort(); 
+	return 0;
+#endif
 }
 
 int  lock_cond_wait(lock_cond_t *cond, lock_mutex_t *lock, lock_context_t *me){
