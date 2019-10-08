@@ -26,7 +26,7 @@ index fb4c970..47e1f3c 100644
 +semtcptsmutlock_original	 \
 +semtcptsfifomutlock_original	 
 diff --git a/src/interpose.c b/src/interpose.c
-index 1e65e77..4b73e7d 100644
+index 1e65e77..4c79b4d 100644
 --- a/src/interpose.c
 +++ b/src/interpose.c
 @@ -87,6 +87,14 @@
@@ -44,15 +44,6 @@ index 1e65e77..4b73e7d 100644
  #else
  #error "No lock algorithm known"
  #endif
-@@ -259,7 +267,7 @@ static void __attribute__((constructor)) REAL(interpose_init)(void) {
-         return;
-     }
- 
--    printf("Using Lib%s with waiting %s\n", LOCK_ALGORITHM, WAITING_POLICY);
-+    printf("Using Lib%s with waiting %s and spinning threshold %lld\n", LOCK_ALGORITHM, WAITING_POLICY, SPINNING_THRESHOLD);
- #if !NO_INDIRECTION
-     pthread_to_lock = clht_create(NUM_BUCKETS);
-     assert(pthread_to_lock != NULL);
 @@ -456,6 +464,8 @@ int pthread_mutex_lock(pthread_mutex_t *mutex) {
  int pthread_mutex_timedlock(pthread_mutex_t *mutex,
                              const struct timespec *abstime) {
@@ -78,3 +69,28 @@ index 1e65e77..4b73e7d 100644
  }
  
  
+diff --git a/src/mcs.c b/src/mcs.c
+index 67f16ae..574c646 100644
+--- a/src/mcs.c
++++ b/src/mcs.c
+@@ -110,7 +110,8 @@ int mcs_mutex_lock(mcs_mutex_t *impl, mcs_node_t *me) {
+ #if COND_VAR
+     if (ret == 0) {
+         DEBUG_PTHREAD("[%d] Lock posix=%p\n", cur_thread_id, &impl->posix_lock);
+-        assert(REAL(pthread_mutex_lock)(&impl->posix_lock) == 0);
++        REAL(pthread_mutex_unlock)(&impl->posix_lock);
++        //assert(REAL(pthread_mutex_lock)(&impl->posix_lock) == 0);
+     }
+ #endif
+     DEBUG("[%d] Lock acquired posix=%p\n", cur_thread_id, &impl->posix_lock);
+@@ -169,7 +170,9 @@ static void __mcs_mutex_unlock(mcs_mutex_t *impl, mcs_node_t *me) {
+ void mcs_mutex_unlock(mcs_mutex_t *impl, mcs_node_t *me) {
+ #if COND_VAR
+     DEBUG_PTHREAD("[%d] Unlock posix=%p\n", cur_thread_id, &impl->posix_lock);
+-    assert(REAL(pthread_mutex_unlock)(&impl->posix_lock) == 0);
++    //assert(REAL(pthread_mutex_unlock)(&impl->posix_lock)    == 0);
++    REAL(pthread_mutex_unlock)(&impl->posix_lock);
++
+ #endif
+     __mcs_mutex_unlock(impl, me);
+ }
