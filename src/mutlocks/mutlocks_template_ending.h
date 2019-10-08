@@ -12,12 +12,14 @@ lock_mutex_t *lock_mutex_create(const pthread_mutexattr_t *attr){
 }
 
 int  lock_mutex_lock(   lock_mutex_t *impl, lock_context_t *me){
- 	int res = DEC_LOCK(NAME)(impl);
+ 	DEC_LOCK(NAME)(impl);
  	#if COND_VAR
     DEBUG_PTHREAD("[%d] Lock posix=%p\n", cur_thread_id, &impl->posix_lock);
-    assert(REAL(pthread_mutex_lock)(&impl->posix_lock) == 0);
+    //int ret = 
+    REAL(pthread_mutex_lock)(&impl->posix_lock);
+    //assert(ret == 0);
     #endif
-	return res;
+	return 0;
 
 }
 
@@ -30,7 +32,9 @@ int  lock_mutex_trylock(lock_mutex_t *impl, lock_context_t *me){
 void lock_mutex_unlock( lock_mutex_t *impl, lock_context_t *me){
  #if COND_VAR
     DEBUG_PTHREAD("[%d] Unlock posix=%p\n", cur_thread_id, &impl->posix_lock);
-    assert(REAL(pthread_mutex_unlock)(&impl->posix_lock) == 0);
+    //int ret = 
+    REAL(pthread_mutex_unlock)(&impl->posix_lock);
+    assert(ret == 0);
 #endif
 	DEC_UNLO(NAME)(impl);
 }
