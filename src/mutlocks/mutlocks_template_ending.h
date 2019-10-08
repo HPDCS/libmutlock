@@ -14,11 +14,9 @@ lock_mutex_t *lock_mutex_create(const pthread_mutexattr_t *attr){
 int  lock_mutex_lock(   lock_mutex_t *impl, lock_context_t *me){
  	int res = DEC_LOCK(NAME)(impl);
  	#if COND_VAR
-    if (res == 0) {
-        DEBUG_PTHREAD("[%d] Lock posix=%p\n", cur_thread_id, &impl->posix_lock);
-        assert(REAL(pthread_mutex_lock)(&impl->posix_lock) == 0);
-    }
-	#endif
+    DEBUG_PTHREAD("[%d] Lock posix=%p\n", cur_thread_id, &impl->posix_lock);
+    assert(REAL(pthread_mutex_lock)(&impl->posix_lock) == 0);
+    #endif
 	return res;
 
 }
