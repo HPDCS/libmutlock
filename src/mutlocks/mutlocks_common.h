@@ -74,5 +74,20 @@
 
 #define SUCCESS 1
 #define FAIL 0
+
+/* accurate time measurements on late recent cpus */
+static inline unsigned long long __attribute__((always_inline))
+read_tsc_p()
+{
+	unsigned long long tsc;
+	asm volatile ("rdtscp\n"
+		"shl $32, %%rdx\n"
+		"or %%rdx, %%rax"
+		: "=a"(tsc)
+		:
+		: "%rcx", "%rdx");
+	return tsc;
+}
+
 #endif
 

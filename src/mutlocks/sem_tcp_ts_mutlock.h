@@ -27,7 +27,7 @@ TYPEDEF_SEM_OBJ(NAME);
 //TYPEDEF_FIFO_SPIN_OBJ(NAME);
 TYPEDEF_NOFIFO_SPIN_OBJ(NAME);
 
-#include "mutlocks_template.h"
+#include "mutlocks_template_rdtscp.h"
 #undef NAME
 
 /*

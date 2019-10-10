@@ -39,12 +39,15 @@ void lock_mutex_unlock( lock_mutex_t *impl, lock_context_t *me){
 	DEC_UNLO(NAME)(impl);
 }
 
-int  lock_mutex_destroy(lock_mutex_t *lock){ 						
+int  lock_mutex_destroy(lock_mutex_t * mutlock){ 						
 	#if COND_VAR
-	    REAL(pthread_mutex_destroy)(&lock->posix_lock);
+	    REAL(pthread_mutex_destroy)(&mutlock->posix_lock);
 	#endif
-	printf ("HERE WE ARE\n");
-	return 	DEC_DEST(NAME)(lock);
+	printf ("HERE WE ARE!\n");
+	printf ("Mean CS clock: %llu, Mean Delay clock: %llu, Mean Ratio: %f\n", 
+		mutlock->avg_cslen / mutlock->csnum, mutlock->avg_delay / mutlock->lwnum, (mutlock->avg_delay / mutlock->lwnum)/(double)(mutlock->avg_cslen / mutlock->csnum));
+	
+	return 	DEC_DEST(NAME)(mutlock);
 }
 
 
