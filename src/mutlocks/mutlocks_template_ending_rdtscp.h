@@ -43,9 +43,10 @@ int  lock_mutex_destroy(lock_mutex_t * mutlock){
 	#if COND_VAR
 	    REAL(pthread_mutex_destroy)(&mutlock->posix_lock);
 	#endif
-	printf ("HERE WE ARE!\n");
-	printf ("Mean CS clock: %llu, Mean Delay clock: %llu, Mean Ratio: %f\n", 
-		mutlock->avg_cslen / mutlock->csnum, mutlock->avg_delay / mutlock->lwnum, (mutlock->avg_delay / mutlock->lwnum)/(double)(mutlock->avg_cslen / mutlock->csnum));
+	unsigned long long meanclock = (mutlock->csnum != 0) ? (mutlock->avg_cslen / mutlock->csnum) : (0.0);
+	unsigned long long meandelay = (mutlock->lwnum != 0) ? (mutlock->avg_delay / mutlock->lwnum) : (0.0);
+	double meanratio = (meandelay != 0) ? (meanclock / (double)meandelay) : (0.0);
+	printf ("Mean CS clock: %llu, Mean Delay clock: %llu, Mean Ratio: %f\n", meanclock, meandelay, meanratio);
 	
 	return 	DEC_DEST(NAME)(mutlock);
 }
