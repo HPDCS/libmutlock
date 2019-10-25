@@ -43,7 +43,7 @@ int  lock_mutex_destroy(lock_mutex_t *lock){
 	#if COND_VAR
 	    REAL(pthread_mutex_destroy)(&lock->posix_lock);
 	#endif
-	printf ("HERE WE ARE\n");
+    //printf ("HERE WE ARE\n");
 	return 	DEC_DEST(NAME)(lock);
 }
 
