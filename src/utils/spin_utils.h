@@ -39,9 +39,13 @@ typedef __nofifo_spin_obj spin_obj_t;
 #define __NOFIFO_SPIN_API_INIT(obj)			{ *((__nofifo_spin_obj*)obj) = 0;}
 #define __NOFIFO_SPIN_API_DESTROY(obj)		{}
 #define __NOFIFO_SPIN_API_LOCK(obj)			__nofifo_spin_lock(obj)
+#define __NOFIFO_SPIN_API_TRYLOCK(obj)			__nofifo_spin_trylock(obj)
 #define __NOFIFO_SPIN_API_UNLOCK(obj)		__sync_bool_compare_and_swap(obj, 1, 0);
 
 
+static inline long long __nofifo_spin_trylock(__nofifo_spin_obj* obj){
+	return __sync_bool_compare_and_swap(obj, 0, 1);
+}
 
 static inline long long __nofifo_spin_lock(__nofifo_spin_obj* obj){
 
