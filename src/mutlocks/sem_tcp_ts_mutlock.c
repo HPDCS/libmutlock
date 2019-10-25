@@ -11,7 +11,7 @@
 #include "utils.h"
 #include "interpose.h"
 #define NAME sem_tcp_ts
-#include "mutlocks_template_ending_rdtscp.h"
+#include "mutlocks_template_ending.h"
 #endif
 
 
