@@ -1,3 +1,7 @@
+#ifndef _MUTLOCK_TEMPLATE_ENDING_RDTSCP_H_
+#define _MUTLOCK_TEMPLATE_ENDING_RDTSCP_H_
+
+
 lock_mutex_t *lock_mutex_create(const pthread_mutexattr_t *attr){
     lock_mutex_t *impl = (lock_mutex_t *)alloc_cache_align(sizeof(lock_mutex_t));
 	__HLOCK_PARAM_OBJ(NAME) params;
@@ -43,10 +47,10 @@ int  lock_mutex_destroy(lock_mutex_t * mutlock){
 	#if COND_VAR
 	    REAL(pthread_mutex_destroy)(&mutlock->posix_lock);
 	#endif
-	unsigned long long meanclock = (mutlock->csnum != 0) ? (mutlock->avg_cslen / mutlock->csnum) : (0.0);
-	unsigned long long meandelay = (mutlock->lwnum != 0) ? (mutlock->avg_delay / mutlock->lwnum) : (0.0);
-	double meanratio = (meandelay != 0) ? (meanclock / (double)meandelay) : (0.0);
-	printf ("Mean CS clock: %llu, Mean Delay clock: %llu, Mean Ratio: %f\n", meanclock, meandelay, meanratio);
+	//unsigned long long meanclock = (mutlock->csnum != 0) ? (mutlock->avg_cslen / mutlock->csnum) : (0.0);
+	//unsigned long long meandelay = (mutlock->lwnum != 0) ? (mutlock->avg_delay / mutlock->lwnum) : (0.0);
+	//double meanratio = (meandelay != 0) ? (meanclock / (double)meandelay) : (0.0);
+	//printf ("Mean CS clock: %llu, Mean Delay clock: %llu, Mean Ratio: %f\n", meanclock, meandelay, meanratio);
 	
 	return 	DEC_DEST(NAME)(mutlock);
 }

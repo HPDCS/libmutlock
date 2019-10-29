@@ -1,3 +1,6 @@
+#ifndef _MUTLOCK_TEMPLATE_RDTSCP_H_
+#define _MUTLOCK_TEMPLATE_RDTSCP_H_
+
 #if COND_VAR
 #include "padding.h"
 #include <errno.h>
@@ -303,5 +306,5 @@ void lock_thread_exit(void);
 void lock_application_init(void);
 void lock_application_exit(void);
 
-
+#endif
 

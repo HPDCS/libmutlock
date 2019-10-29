@@ -1,3 +1,6 @@
+#ifndef _MUTLOCKS_TEMPLATE_MULTIPLE_WAKEUP_H_
+#define _MUTLOCKS_TEMPLATE_MULTIPLE_WAKEUP_H_
+
 #if COND_VAR
 #include "padding.h"
 #include <errno.h>
@@ -21,7 +24,7 @@ char inc_scale;							/**/
 short cores;							/*12*/
 int trylocked;							/*16*/
 int towakeup;							/*20*/
-char pad1[64-5*sizeof(int)];
+char pad4[64-5*sizeof(int)];
 } __HLOCK_OBJ(NAME);
 
 
@@ -103,7 +106,6 @@ static inline int INLINE_FUNC_NAME(NAME, __mut_unlock)( __HLOCK_OBJ(NAME) *mutlo
 	long long lstate = 0;
 	long long thc = 0;
 	long long sws = 0;
-	long long tmp = 0;
 	int wuc = 0;
 	if(mutlock->trylocked){
 		SPIN_API_UNLOCK(&mutlock->spin_obj);
@@ -296,4 +298,4 @@ void lock_application_init(void);
 void lock_application_exit(void);
 
 
-
+#endif

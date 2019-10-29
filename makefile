@@ -96,6 +96,7 @@ liblitl_%:
 	cp $(SRCDIR)/mutlocks/mutlocks_common.h liblitl/include
 	cp $(SRCDIR)/mutlocks/mutlocks_template.h liblitl/include
 	cp $(SRCDIR)/mutlocks/mutlocks_template_ending.h liblitl/include
+	cp $(SRCDIR)/mutlocks/mutlocks_template_multiplewakeup.h liblitl/include
 	cp $(SRCDIR)/mutlocks/$(patsubst liblitl_%,%, $@).h liblitl/include
 	cp $(SRCDIR)/mutlocks/$(patsubst liblitl_%,%, $@).c liblitl/src
 	mv liblitl/include/$(patsubst liblitl_%,%, $@).h liblitl/include/$(subst _,,$(patsubst liblitl_%,%, $@)).h
