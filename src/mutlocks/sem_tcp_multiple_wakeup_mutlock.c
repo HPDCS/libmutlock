@@ -11,7 +11,7 @@
 #include "utils.h"
 #include "interpose.h"
 #define NAME sem_tcp_multiple_wakeup
-#include "mutlocks_template_multiplewakeup.h"
+#include "mutlocks_template_ending_rdtscp.h"
 #endif
 
 
