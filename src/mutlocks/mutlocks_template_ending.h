@@ -1,6 +1,3 @@
-#ifndef _MUTLOCK_TEMPLATE_ENDING_H_
-#define _MUTLOCK_TEMPLATE_ENDING_H_
-
 lock_mutex_t *lock_mutex_create(const pthread_mutexattr_t *attr){
     lock_mutex_t *impl = (lock_mutex_t *)alloc_cache_align(sizeof(lock_mutex_t));
 	__HLOCK_PARAM_OBJ(NAME) params;
@@ -131,5 +128,3 @@ void lock_thread_start(void){}
 void lock_thread_exit(void){}
 void lock_application_init(void){}
 void lock_application_exit(void){}
-
-#endif

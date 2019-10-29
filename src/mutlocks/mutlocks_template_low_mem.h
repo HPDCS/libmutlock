@@ -1,6 +1,3 @@
-#ifndef MUTLOCKS_TEMPLATE_LOW_MEM_H_
-#define MUTLOCKS_TEMPLATE_LOW_MEM_H_
-
 #if COND_VAR
 #include "padding.h"
 #include <errno.h>
@@ -276,6 +273,3 @@ void lock_thread_start(void);
 void lock_thread_exit(void);
 void lock_application_init(void);
 void lock_application_exit(void);
-
-
-#endif
