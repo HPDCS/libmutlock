@@ -53,11 +53,20 @@ int DEC_LOCK(NAME)(__HLOCK_OBJ(NAME)* mutlock){
 	mutlock->hcnt += !(slept && !spun);
 
 	if (slept && !spun) {
-		mutlock->hcnt = 0;
-		delta = sws;
-		delta = ( (sws + delta) <= mutlock->cores) ? delta : (mutlock->cores-delta);
+		if(sws != mutlock->cores){
+			mutlock->hcnt = 0;
+			delta = sws;
+			delta = ( (sws + delta) <= mutlock->cores) ? delta : (mutlock->cores-sws);
+		} 
+		else if(sws == mutlock->cores){
+			unsigned long long thc = ((mutlock->lstate) & MASK_THC);
+			if(thc > mutlock->cores){
+				mutlock->hcnt = 0;
+				delta = -ssws+1;
+			}
+		} 
 	}
-	if (mutlock->hcnt == 100 ) { // sws 0-relative or not??
+	if (mutlock->hcnt == 10 ) { // sws 0-relative or not??
 		mutlock->hcnt = 0;
 		delta = -(sws > 1);
 	}
