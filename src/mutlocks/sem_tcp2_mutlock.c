@@ -65,10 +65,7 @@ int DEC_LOCK(NAME)(__HLOCK_OBJ(NAME)* mutlock){
 			delta = sws;
 			delta = ( (sws + delta) <= mutlock->cores) ? delta : (mutlock->cores-sws);
 		} 
-		else if(sws < mutlock->cores){
-				delta = 1;
-		} 
-		else if(sws == mutlock->cores){
+		else{
 				delta = -ssws+1;
 		} 
 	}
