@@ -1,7 +1,6 @@
+
 //#include <stdlib.h>
 //#include <assert.h>
-
-
 
 #if __has_include("sem_tcp_mutlock.h")
 #include "sem_tcp_mutlock.h"
@@ -71,6 +70,7 @@ int DEC_LOCK(NAME)(__HLOCK_OBJ(NAME)* mutlock){
 		delta = sws;
 		delta = ( (sws + delta) <= mutlock->cores) ? delta : (mutlock->cores-delta);
 	}
+
 	if (mutlock->hcnt == 10 ) { // sws 0-relative or not??
 		mutlock->hcnt = 0;
 		delta = -(sws > 1);

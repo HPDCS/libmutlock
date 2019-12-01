@@ -2,9 +2,16 @@
 //#include <stdlib.h>
 //#include <assert.h>
 
+#if __has_include("sem_tcp2_mutlock.h")
 #include "sem_tcp2_mutlock.h"
-
 #define NAME sem_tcp2
+#else
+#include "semtcp2mutlock.h"
+#include "utils.h"
+#include "interpose.h"
+#define NAME sem_tcp2
+#include "mutlocks_template_ending.h"
+#endif
 
 
 
@@ -47,8 +54,6 @@ int DEC_LOCK(NAME)(__HLOCK_OBJ(NAME)* mutlock){
 	if(updsws) 
 		return SUCCESS;
 	
-//	if(!spun)
-//		printf("DAJE\n");
 	// arrived too late, increase heuristic count
 	mutlock->hcnt += !(slept && !spun);
 
