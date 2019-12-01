@@ -40,7 +40,7 @@ int DEC_LOCK(NAME)(__HLOCK_OBJ(NAME)* mutlock){
 	long long delta = 0;
 	long long res = 0;
 	unsigned long long sws = 0; 
-	
+	long long ssws = 0; 	
 	// START ACQUIRE
 	res = INLINE_FUNC_NAME(NAME, __mut_lock)(mutlock);
 	// END ACQUIRE
@@ -50,7 +50,7 @@ int DEC_LOCK(NAME)(__HLOCK_OBJ(NAME)* mutlock){
 	
 	updsws 	= (res & UPDSWS_MASK) >> UPDSWS_POS; 
 	sws 	= res >> SWS_POS;
-
+	ssws 	= sws;
 	if(updsws) 
 		return SUCCESS;
 	
