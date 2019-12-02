@@ -57,17 +57,16 @@ int DEC_LOCK(NAME)(__HLOCK_OBJ(NAME)* mutlock){
 	// arrived too late, increase heuristic count
 	mutlock->hcnt += !(slept && !spun);
 
-	if (slept && !spun) {
-		unsigned long long thc = ((mutlock->lstate) & MASK_THC);
+	unsigned long long thc = ((mutlock->lstate) & MASK_THC);
+		
+	if(thc > mutlock->cores){
 		mutlock->hcnt = 0;
-
-		if(thc <= mutlock->cores){
-			delta = sws;
-			delta = ( (sws + delta) <= mutlock->cores) ? delta : (mutlock->cores-sws);
-		} 
-		else{
-				delta = -ssws+1;
-		} 
+		delta = -ssws+2;
+	}
+	else if (slept && !spun) {
+		mutlock->hcnt = 0;
+		delta = sws;
+		delta = ( (sws + delta) <= mutlock->cores) ? delta : (mutlock->cores-sws);
 	}
 	if (mutlock->hcnt == 10 ) { // sws 0-relative or not??
 		mutlock->hcnt = 0;
